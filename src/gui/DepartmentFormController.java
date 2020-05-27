@@ -1,5 +1,12 @@
 package gui;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+
 import db.DbException;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
@@ -8,16 +15,13 @@ import gui.util.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Department;
 import model.exceptions.ValidationException;
 import model.services.DepartmentService;
-
-import java.net.URL;
-import java.util.*;
 
 public class DepartmentFormController implements Initializable {
 
@@ -37,10 +41,10 @@ public class DepartmentFormController implements Initializable {
     private Label labelErrorName;
 
     @FXML
-    private Button btCancel;
+    private Button btSave;
 
     @FXML
-    Button btSave;
+    private Button btCancel;
 
     public void setDepartment(Department entity) {
         this.entity = entity;
@@ -67,10 +71,12 @@ public class DepartmentFormController implements Initializable {
             service.saveOrUpdate(entity);
             notifyDataChangeListeners();
             Utils.currentStage(event).close();
-        } catch (ValidationException e) {
+        }
+        catch (ValidationException e) {
             setErrorMessages(e.getErrors());
-        } catch (DbException e) {
-            Alerts.showAlert("Error saving object", null, e.getMessage(), Alert.AlertType.ERROR);
+        }
+        catch (DbException e) {
+            Alerts.showAlert("Error saving object", null, e.getMessage(), AlertType.ERROR);
         }
     }
 
@@ -79,7 +85,6 @@ public class DepartmentFormController implements Initializable {
             listener.onDataChanged();
         }
     }
-
 
     private Department getFormData() {
         Department obj = new Department();
@@ -91,7 +96,6 @@ public class DepartmentFormController implements Initializable {
         if (txtName.getText() == null || txtName.getText().trim().equals("")) {
             exception.addError("name", "Field can't be empty");
         }
-
         obj.setName(txtName.getText());
 
         if (exception.getErrors().size() > 0) {
